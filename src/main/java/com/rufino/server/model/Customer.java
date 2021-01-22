@@ -4,10 +4,12 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -30,12 +32,20 @@ public class Customer {
     private String customerPhone;
 
     @NotBlank(message = "Value should not be empty")
+    @Column(unique=true)
     private String customerEmail;
 
+    @NotNull(message = "Value should not be empty")
+    @Column(columnDefinition = "timestamp with time zone")
     private ZonedDateTime customerCreatedAt;
 
     public Customer() {
         this.customerId = UUID.randomUUID();
+        this.customerCreatedAt = ZonedDateTime.now(ZoneId.of("Z"));
+    }
+
+    public Customer(String id) {
+        this.customerId = UUID.fromString(id);
         this.customerCreatedAt = ZonedDateTime.now(ZoneId.of("Z"));
     }
 
