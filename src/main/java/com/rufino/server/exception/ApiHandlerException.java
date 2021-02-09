@@ -4,6 +4,7 @@ import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -35,6 +36,30 @@ public class ApiHandlerException {
         ApiException apiException = new ApiException(errors, badRequest, ZonedDateTime.now());
 
         return new ResponseEntity<>(apiException, badRequest);
+    }
+
+    @ExceptionHandler(value = { DataIntegrityViolationException.class })
+    public ResponseEntity<Object> handleDBException(DataIntegrityViolationException e) {
+        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
+        Map<String, String> errors = handleSqlError(e);
+        ApiException apiException = new ApiException(errors, badRequest, ZonedDateTime.now());
+
+        return new ResponseEntity<>(apiException, badRequest);
+    }
+
+    public Map<String, String> handleSqlError(DataIntegrityViolationException e) {
+
+        String errorMsg = e.getMessage();
+        errorMsg = errorMsg.replace("\n", "").replace("\r", "");
+
+        String pattern = ".*\\w*; SQL.*;.*\\[(uk_customer_email)\\].*";
+        String error = (errorMsg.replaceAll(pattern, "$1"));
+        Map<String, String> errors = new HashMap<>();
+
+        if (error.equals("uk_customer_email"))
+            errors.put("customerEmail", "Email not available");
+
+        return errors;
     }
 
 }

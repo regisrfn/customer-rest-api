@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS customers
  customer_email      varchar(50) NOT NULL,
  customer_created_at timestamp with time zone NOT NULL,
  CONSTRAINT PK_customers PRIMARY KEY ( customer_id ),
- CONSTRAINT ind_email UNIQUE ( customer_email )
+ CONSTRAINT uk_customer_email UNIQUE ( customer_email )
 );

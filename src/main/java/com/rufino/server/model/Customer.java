@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -15,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @Entity
-@Table(name = "customers")
+@Table(name = "customers", uniqueConstraints = @UniqueConstraint(columnNames = "customerEmail", name = "uk_customer_email"))
 @JsonInclude(Include.NON_NULL)
 public class Customer {
 
@@ -24,15 +25,14 @@ public class Customer {
 
     @NotBlank(message = "Value should not be empty")
     private String customerName;
-    
+
     @NotBlank(message = "Value should not be empty")
     private String customerLastName;
-    
+
     @NotBlank(message = "Value should not be empty")
     private String customerPhone;
 
     @NotBlank(message = "Value should not be empty")
-    @Column(unique=true)
     private String customerEmail;
 
     @NotNull(message = "Value should not be empty")
@@ -89,9 +89,9 @@ public class Customer {
         this.customerCreatedAt = customerCreatedAt;
     }
 
-	public UUID getCustomerId() {
-		return customerId;
-	}
+    public UUID getCustomerId() {
+        return customerId;
+    }
 
     public void setCustomerId(UUID customerId) {
         this.customerId = customerId;
