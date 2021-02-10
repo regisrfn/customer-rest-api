@@ -54,7 +54,15 @@ public class CustomerService {
         }
     }
 
-    public Customer updateCustomer(UUID id, Customer customer) {
-        return customerDao.updateCustomer(id, customer);
+    public Customer updateCustomer(String id, Customer customer) {
+        try {
+            UUID customerId = UUID.fromString(id);
+            return customerDao.updateCustomer(customerId, customer);
+        } catch (IllegalArgumentException e) {
+            throw new ApiRequestException("Invalid customer UUID format", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ApiRequestException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
