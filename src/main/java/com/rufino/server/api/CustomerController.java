@@ -1,6 +1,5 @@
 package com.rufino.server.api;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -52,18 +51,8 @@ public class CustomerController {
 
     @DeleteMapping("{id}")
     public Map<String, String> deleteCustomerById(@PathVariable String id) {
-        Map<String, String> message = new HashMap<>();
-
-        try {
-            UUID customerId = UUID.fromString(id);
-            int op = customerService.deleteCustomerById(customerId);
-            if (op == 0)
-                throw new ApiRequestException("Customer not found", HttpStatus.NOT_FOUND);
-            message.put("message", "successfully operation");
-            return message;
-        } catch (IllegalArgumentException e) {
-            throw new ApiRequestException("Invalid user UUID format", HttpStatus.BAD_REQUEST);
-        }
+        customerService.deleteCustomerById(id);
+        return Map.of("message", "successfully operation");
     }
 
     @PutMapping("{id}")

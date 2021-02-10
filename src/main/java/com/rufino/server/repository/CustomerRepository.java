@@ -8,6 +8,7 @@ import com.rufino.server.dao.JpaDao;
 import com.rufino.server.model.Customer;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -27,13 +28,13 @@ public class CustomerRepository implements CustomerDao {
     }
 
     @Override
-    public int deleteCustomer(UUID id) {
+    public boolean deleteCustomer(UUID id) {
         try {
             jpaDataAccess.deleteById(id);
-            return 1;
-        } catch (Exception e) {
+            return true;
+        } catch (EmptyResultDataAccessException e) {
             e.printStackTrace();
-            throw new RuntimeException("Could not remove customer");
+            return false;
         }
     }
 

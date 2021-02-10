@@ -42,8 +42,16 @@ public class CustomerService {
 
     }
 
-    public int deleteCustomerById(UUID id) {
-        return customerDao.deleteCustomer(id);
+    public boolean deleteCustomerById(String id) {
+        try {
+            UUID customerId = UUID.fromString(id);
+            boolean ok = customerDao.deleteCustomer(customerId);
+            if (!ok)
+                throw new ApiRequestException("Customer not found", HttpStatus.NOT_FOUND);
+            return ok;
+        } catch (IllegalArgumentException e) {
+            throw new ApiRequestException("Invalid customer UUID format", HttpStatus.BAD_REQUEST);
+        }
     }
 
     public Customer updateCustomer(UUID id, Customer customer) {

@@ -8,7 +8,7 @@ import com.rufino.server.model.Customer;
 public interface CustomerDao {
     Customer insertCustomer(Customer customer);
 
-    int deleteCustomer(UUID id);
+    boolean deleteCustomer(UUID id);
 
     List<Customer> getAll();
 
