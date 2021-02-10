@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.UUID;
 
 import com.rufino.server.dao.CustomerDao;
+import com.rufino.server.exception.ApiRequestException;
 import com.rufino.server.model.Customer;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,8 +29,17 @@ public class CustomerService {
         return customerDao.getAll();
     }
 
-    public Customer getCustomerById(UUID id) {
-        return customerDao.getCustomer(id);
+    public Customer getCustomerById(String id) {
+        try {
+            UUID customerId = UUID.fromString(id);
+            Customer customer = customerDao.getCustomer(customerId);
+            if (customer == null)
+                throw new ApiRequestException("Customer not found", HttpStatus.NOT_FOUND);
+            return customer;
+        } catch (IllegalArgumentException e) {
+            throw new ApiRequestException("Invalid customer UUID format", HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     public int deleteCustomerById(UUID id) {

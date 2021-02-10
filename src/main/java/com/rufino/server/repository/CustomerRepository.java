@@ -33,7 +33,7 @@ public class CustomerRepository implements CustomerDao {
             return 1;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Could not remover customer");
+            throw new RuntimeException("Could not remove customer");
         }
     }
 

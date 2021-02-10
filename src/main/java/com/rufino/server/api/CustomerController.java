@@ -13,7 +13,6 @@ import com.rufino.server.service.CustomerService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,15 +47,7 @@ public class CustomerController {
 
     @GetMapping("{id}")
     public Customer getCustomerById(@PathVariable String id) {
-        try {
-            UUID customerId = UUID.fromString(id);
-            Customer customer = customerService.getCustomerById(customerId);
-            if (customer == null)
-                throw new ApiRequestException("Customer not found", HttpStatus.NOT_FOUND);
-            return customer;
-        } catch (IllegalArgumentException e) {
-            throw new ApiRequestException("Invalid user UUID format", HttpStatus.BAD_REQUEST);
-        }
+        return customerService.getCustomerById(id);
     }
 
     @DeleteMapping("{id}")
@@ -76,14 +67,9 @@ public class CustomerController {
     }
 
     @PutMapping("{id}")
-    public Customer updateCustomer(@PathVariable String id, @Valid @RequestBody Customer customer, BindingResult bindingResult) {
+    public Customer updateCustomer(@PathVariable String id, @Valid @RequestBody Customer customer) {
         try {
             UUID customerId = UUID.fromString(id);
-            Customer validatedCustomer = new Customer();
-
-            if (hasErrorsCustomerRequest(customer, bindingResult, validatedCustomer))
-                return customerService.updateCustomer(customerId, validatedCustomer);
-
             return customerService.updateCustomer(customerId, customer);
 
         } catch (IllegalArgumentException e) {
@@ -91,26 +77,4 @@ public class CustomerController {
         }
     }
 
-    private boolean hasErrorsCustomerRequest(Customer customer, BindingResult bindingResult, Customer validatedCustomer) {
-        if (bindingResult.hasErrors()) {
-            // ignore field password
-            if (!bindingResult.hasFieldErrors("customerName")) {
-                validatedCustomer.setCustomerName(customer.getCustomerName().toString());
-            }
-            if (!bindingResult.hasFieldErrors("customerLastName")) {
-                validatedCustomer.setCustomerLastName(customer.getCustomerLastName());
-            }
-            if (!bindingResult.hasFieldErrors("customerPhone")) {
-                validatedCustomer.setCustomerPhone(customer.getCustomerPhone());
-            }
-            if (!bindingResult.hasFieldErrors("customerEmail")) {
-                validatedCustomer.setCustomerEmail(customer.getCustomerEmail());
-            }
-            if (!bindingResult.hasFieldErrors("customerCreatedAt")) {
-                validatedCustomer.setCustomerCreatedAt(customer.getCustomerCreatedAt());
-            }
-            return true;
-        }
-        return false;
-    }
 }
