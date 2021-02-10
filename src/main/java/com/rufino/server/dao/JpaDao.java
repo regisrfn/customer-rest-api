@@ -7,5 +7,5 @@ import com.rufino.server.model.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface JpaDao extends JpaRepository<Customer, UUID> {
-    
+    Customer findByCustomerEmail(String email);    
 }

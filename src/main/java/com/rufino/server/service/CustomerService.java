@@ -65,4 +65,11 @@ public class CustomerService {
             throw new ApiRequestException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    public Customer getCustomerByEmail(String email) {
+        Customer customer = customerDao.getCustomerByEmail(email);
+        if (customer == null)
+            throw new ApiRequestException("Customer not found", HttpStatus.NOT_FOUND);
+        return customer;
+    }
 }

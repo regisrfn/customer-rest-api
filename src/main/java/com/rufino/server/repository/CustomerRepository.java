@@ -53,4 +53,9 @@ public class CustomerRepository implements CustomerDao {
         customer.setCustomerId(id);
         return jpaDataAccess.save(customer);
     }
+
+    @Override
+    public Customer getCustomerByEmail(String email) {
+        return jpaDataAccess.findByCustomerEmail(email);
+    }
 }

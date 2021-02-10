@@ -14,5 +14,7 @@ public interface CustomerDao {
 
     Customer getCustomer(UUID id);
 
+    Customer getCustomerByEmail(String email);
+
     Customer updateCustomer(UUID id, Customer customer);
 }
