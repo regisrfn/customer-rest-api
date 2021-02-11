@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.rufino.server.dao.CustomerDao;
 import com.rufino.server.exception.ApiRequestException;
 import com.rufino.server.model.Customer;
+import com.rufino.server.validation.ValidateEmail;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,13 +16,17 @@ import org.springframework.stereotype.Service;
 public class CustomerService {
 
     private CustomerDao customerDao;
+    private ValidateEmail validateEmail;
 
     @Autowired
-    public CustomerService(CustomerDao customerDao) {
+    public CustomerService(CustomerDao customerDao, ValidateEmail validateEmail) {
+        this.validateEmail = validateEmail;
         this.customerDao = customerDao;
     }
 
     public Customer saveCustomer(Customer customer) {
+        if (!validateEmail.test(customer.getCustomerEmail()))
+            throw new ApiRequestException("Invalid email format");
         return customerDao.insertCustomer(customer);
     }
 

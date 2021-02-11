@@ -88,4 +88,20 @@ public class PostRequestTests {
                 .andExpect(status().isBadRequest()).andReturn();
 
     }
+
+    @Test
+    void itShouldNotSaveCustomer_wrongEmailFormat() throws Exception {
+        JSONObject my_obj = new JSONObject();
+
+        my_obj.put("customerName", "Joe");
+        my_obj.put("customerLastName", "Doe");
+        my_obj.put("customerPhone", "1111-2222");
+        my_obj.put("customerEmail", "joegmail.com");
+
+        mockMvc.perform(post("/api/v1/customer").contentType(MediaType.APPLICATION_JSON).content(my_obj.toString()))
+                .andExpect(
+                        MockMvcResultMatchers.jsonPath("$.errors.apiError", Is.is("Invalid email format")))
+                .andExpect(status().isBadRequest()).andReturn();
+
+    }
 }
